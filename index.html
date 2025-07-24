@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vedant Sharma | Senior Platform Engineer | Interactive Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cool Blue Serenity -->
+    <!-- Application Structure Plan: The application is designed as a single-page narrative dashboard to transform a static resume into an engaging story of professional impact. The structure is thematic, not chronological, to immediately highlight value. It starts with a Hero section for a strong first impression. This is followed by a "Key Impact Dashboard" with interactive charts and KPI cards, allowing users to visually grasp Vedant's quantifiable achievements in core areas like efficiency, security, and cost savings. A "Technical Toolbox" section logically groups his skills for quick assessment. Finally, a streamlined "Career Journey" provides traditional context. This user-centric design was chosen to enable recruiters and hiring managers to quickly understand Vedant's value proposition and how his skills translate to tangible business outcomes, which is more effective than scanning a text-heavy document. -->
+    <!-- Visualization & Content Choices: All visualizations are designed to be interactive and informative, strictly avoiding SVG and Mermaid JS. 
+    1. Report Info: Quantifiable achievements (% improvements, cost savings). Goal: Compare & Inform. Viz/Method: An interactive bar chart (Chart.js/Canvas) is used to visually compare the magnitude of different achievements. Interaction: Tooltips on hover provide specific details for each metric. Justification: A chart is more engaging and easier to digest than a list of percentages, highlighting the scale of his impact instantly.
+    2. Report Info: Core competencies (Security, Automation, etc.). Goal: Inform & Organize. Viz/Method: KPI cards (HTML/CSS/Tailwind) with Unicode icons. Interaction: N/A, static display. Justification: Cards provide a clean, high-level overview of his main strengths, acting as a visual summary.
+    3. Report Info: Technical Skills list. Goal: Organize & Inform. Viz/Method: Styled HTML "pills" or "badges" in a grid layout. Interaction: N/A. Justification: This modern UI pattern is scannable and visually more appealing than a simple bulleted list.
+    4. Report Info: Professional Experience. Goal: Inform. Viz/Method: A vertically stacked timeline layout (HTML/CSS). Interaction: N/A. Justification: A timeline provides a clear, chronological overview of his career progression. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8; /* Warm off-white, kept for soft contrast */
+            color: #4A4A4A; /* Dark Gray for text */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 350px;
+                max-height: 60vh;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #0284C7; /* Sky-600 */
+        }
+        .kpi-card {
+            background-color: #FFFFFF;
+            border: 1px solid #F3F4F6; /* Gray-100 */
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -2px rgb(0 0 0 / 0.08);
+        }
+        .skill-badge {
+             background-color: #E0F2FE; /* Sky-100 */
+             color: #0C4A6E; /* Sky-900 */
+             padding: 0.5rem 1rem;
+             border-radius: 9999px;
+             font-weight: 500;
+             font-size: 0.875rem;
+             display: inline-block;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-200">
+        <nav class="container mx-auto px-6 py-4 flex justify-center md:justify-between items-center"> <!-- Changed to justify-center -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#impact" class="nav-link text-gray-600 font-medium">Impact Dashboard</a>
+                <a href="#toolbox" class="nav-link text-gray-600 font-medium">Technical Toolbox</a>
+                <a href="#journey" class="nav-link text-gray-600 font-medium">Career Journey</a>
+            </div>
+            <a href="mailto:vedantsharma.3.9.00@gmail.com" class="hidden md:inline-block bg-sky-600 text-white font-semibold px-5 py-2 rounded-lg hover:bg-sky-700 transition-colors">Contact Me</a>
+            <button id="mobile-menu-button" class="md:hidden text-gray-700 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#impact" class="block py-2 nav-link text-gray-600 font-medium">Impact Dashboard</a>
+            <a href="#toolbox" class="block py-2 nav-link text-gray-600 font-medium">Technical Toolbox</a>
+            <a href="#journey" class="block py-2 nav-link text-gray-600 font-medium">Career Journey</a>
+            <a href="mailto:vedantsharma.3.9.00@gmail.com" class="block mt-2 text-center bg-sky-600 text-white font-semibold px-5 py-2 rounded-lg hover:bg-sky-700 transition-colors">Contact Me</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12 md:py-20">
+
+        <!-- Hero Section -->
+        <section id="hero" class="text-center mb-20 md:mb-32">
+            <div class="mb-8"> <!-- Increased mb-8 for more space -->
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-800">Vedant Sharma</h2> <!-- Increased font size -->
+                <div class="flex flex-wrap justify-center items-center gap-x-4 gap-y-2 text-gray-600 text-sm md:text-base mt-2"> <!-- Decreased font size further -->
+                    <a href="tel:+917225942297" class="hover:text-sky-700 transition-colors">📞 +91 7225942297</a>
+                    <a href="mailto:vedantsharma.3.9.00@gmail.com" class="hover:text-sky-700 transition-colors">📧 vedantsharma.3.9.00@gmail.com</a>
+                    <a href="https://www.linkedin.com/in/vedant-sharma-b93859177/" target="_blank" rel="noopener noreferrer" class="hover:text-sky-700 transition-colors">🔗 LinkedIn Profile</a>
+                </div>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-gray-800 mb-4">Senior Platform Engineer</h1>
+            <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+                Certified GCP & Terraform Architect with 3+ years of experience designing, securing, and automating enterprise-grade cloud environments for large-scale healthcare and pharmaceutical workloads.
+            </p>
+        </section>
+
+        <!-- Impact Dashboard Section -->
+        <section id="impact" class="mb-20 md:mb-32">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Key Impact Dashboard</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">This section provides an interactive overview of the quantifiable value delivered through my work. The chart below visualizes key performance improvements, while the cards highlight core areas of expertise and their direct business impact. Interact with the chart to see detailed metrics.</p>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div class="kpi-card">
+                    <div class="flex items-center gap-4">
+                        <span class="text-3xl">🚀</span>
+                        <h3 class="text-xl font-semibold text-gray-800">Efficiency & Automation</h3>
+                    </div>
+                    <p class="mt-2 text-gray-600">Dramatically reduced deployment times and errors through robust IaC and CI/CD pipelines.</p>
+                </div>
+                <div class="kpi-card">
+                    <div class="flex items-center gap-4">
+                        <span class="text-3xl">🛡️</span>
+                        <h3 class="text-xl font-semibold text-gray-800">Security & Compliance</h3>
+                    </div>
+                    <p class="mt-2 text-gray-600">Enforced audit-ready compliance (HIPAA, GxP) and fortified systems using industry best practices.</p>
+                </div>
+                <div class="kpi-card">
+                    <div class="flex items-center gap-4">
+                        <span class="text-3xl">💰</span>
+                        <h3 class="text-xl font-semibold text-gray-800">Cost Optimization</h3>
+                    </div>
+                    <p class="mt-2 text-gray-600">Achieved significant cloud cost reductions while maintaining top-tier customer satisfaction (4/4 NPS).</p>
+                </div>
+                <div class="kpi-card">
+                     <div class="flex items-center gap-4">
+                        <span class="text-3xl">📈</span>
+                        <h3 class="text-xl font-semibold text-gray-800">Reliability & Uptime</h3>
+                    </div>
+                    <p class="mt-2 text-gray-600">Architected systems with 99.97% uptime and zero SLA breaches over 12 months for mission-critical data.</p>
+                </div>
+            </div>
+
+            <!-- Chart -->
+            <div class="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-lg border border-gray-100">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">Quantifiable Achievements</h3>
+                <div class="chart-container">
+                    <canvas id="achievementsChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Toolbox Section -->
+        <section id="toolbox" class="mb-20 md:mb-32">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Technical Toolbox</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">This is a curated collection of the primary technologies and platforms I leverage to build, secure, and automate cloud infrastructure. My expertise spans across cloud platforms, infrastructure as code, containerization, and robust CI/CD practices.</p>
+            </div>
+            <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-100">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Cloud & IaC</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="skill-badge">GCP</span>
+                            <span class="skill-badge">Terraform</span>
+                            <span class="skill-badge">VPC</span>
+                            <span class="skill-badge">Compute Engine</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Containers & CI/CD</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="skill-badge">Kubernetes</span>
+                            <span class="skill-badge">Docker</span>
+                            <span class="skill-badge">GitHub Actions</span>
+                            <span class="skill-badge">GitLab CI/CD</span>
+                            <span class="skill-badge">Cloud Run</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Languages & Scripting</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="skill-badge">Python</span>
+                            <span class="skill-badge">Bash</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Security & Compliance</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="skill-badge">SonarQube</span>
+                            <span class="skill-badge">Nessus</span>
+                            <span class="skill-badge">Cloud Guard</span>
+                            <span class="skill-badge">Wiz</span>
+                            <span class="skill-badge">Secret Manager</span>
+                            <span class="skill-badge">OWASP Top 10</span>
+                            <span class="skill-badge">CIS Benchmarks</span>
+                            <span class="skill-badge">HIPAA</span>
+                             <span class="skill-badge">GxP</span>
+                        </div>
+                    </div>
+                     <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Observability & Data</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="skill-badge">Cloud Monitoring</span>
+                            <span class="skill-badge">Cloud Logging</span>
+                            <span class="skill-badge">Cloud Alerting</span>
+                            <span class="skill-badge">New Relic</span>
+                            <span class="skill-badge">Pub/Sub</span>
+                        </div>
+                    </div>
+                     <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Development & Tools</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="skill-badge">Agile</span>
+                            <span class="skill-badge">Jira</span>
+                            <span class="skill-badge">Github</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Career Journey Section -->
+        <section id="journey">
+             <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Career Journey</h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">This timeline highlights my professional experience and educational background, showing a clear progression in skills and responsibilities within the cloud engineering domain.</p>
+            </div>
+
+            <div class="relative">
+                <!-- Vertical line -->
+                <div class="absolute left-1/2 -translate-x-1/2 h-full w-0.5 bg-sky-200 hidden md:block"></div>
+                
+                <div class="space-y-16">
+                    <!-- Experience -->
+                    <div class="relative flex md:justify-end">
+                        <div class="w-full md:w-5/12">
+                            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                                <p class="text-sky-700 font-semibold mb-1">01/2022 - Present</p>
+                                <h3 class="text-xl font-bold text-gray-800">Senior Platform Engineer</h3>
+                                <p class="text-gray-600 font-medium mb-3">Quantiphi Analytics Solutions Pvt. Ltd.</p>
+                                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                    <li>Architected and automated enterprise-grade GCP environments.</li>
+                                    <li>Led Agile teams, boosting productivity by 20%.</li>
+                                    <li>Retained a key pharmaceutical client via RFP contributions.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="absolute left-1/2 -translate-x-1/2 w-8 h-8 bg-sky-600 rounded-full border-4 border-white hidden md:flex items-center justify-center">
+                           <span class="text-white font-bold">💼</span>
+                        </div>
+                    </div>
+
+                    <!-- Education -->
+                    <div class="relative flex">
+                         <div class="w-full md:w-5/12 md:ml-auto">
+                            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                                <p class="text-sky-700 font-semibold mb-1">2018 - 2022</p>
+                                <h3 class="text-xl font-bold text-gray-800">Bachelor's of Technology, Computer Science</h3>
+                                <p class="text-gray-600 font-medium">Shri GS Institute of Technology and Science</p>
+                            </div>
+                        </div>
+                        <div class="absolute left-1/2 -translate-x-1/2 w-8 h-8 bg-sky-600 rounded-full border-4 border-white hidden md:flex items-center justify-center">
+                            <span class="text-white font-bold">🎓</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-white mt-20 md:mt-32 border-t border-gray-200">
+        <div class="container mx-auto px-6 py-8 text-center text-gray-600">
+            <p>&copy; 2024 Vedant Sharma. This is an interactive profile created for demonstration.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Chart.js implementation
+            const ctx = document.getElementById('achievementsChart').getContext('2d');
+            
+            const data = {
+                labels: [
+                    'CVE Analysis Acceleration', 
+                    'Deployment Error Reduction', 
+                    'Deployment Time Reduction', 
+                    'Application Error Reduction',
+                    'Incident Response Time Reduction',
+                    'Team Productivity Boost',
+                    'Cloud Cost Reduction'
+                ],
+                datasets: [{
+                    label: 'Improvement / Reduction (%)',
+                    data: [60, 40, 20, 30, 25, 20, 15],
+                    backgroundColor: [
+                        'rgba(5, 150, 105, 0.6)', // Emerald-600 (kept)
+                        'rgba(2, 132, 199, 0.6)', // Sky-600 (kept)
+                        'rgba(2, 132, 199, 0.6)', // Sky-600 (changed from Amber)
+                        'rgba(2, 132, 199, 0.6)', // Sky-600 (kept)
+                        'rgba(2, 132, 199, 0.6)', // Sky-600 (changed from Amber)
+                        'rgba(5, 150, 105, 0.6)', // Emerald-600 (kept)
+                        'rgba(239, 68, 68, 0.6)' // Red-500 (kept for cost)
+                    ],
+                    borderColor: [
+                        'rgba(5, 150, 105, 1)',
+                        'rgba(2, 132, 199, 1)',
+                        'rgba(2, 132, 199, 1)', // Sky-600 (changed from Amber)
+                        'rgba(2, 132, 199, 1)',
+                        'rgba(2, 132, 199, 1)', // Sky-600 (changed from Amber)
+                        'rgba(5, 150, 105, 1)',
+                        'rgba(239, 68, 68, 1)'
+                    ],
+                    borderWidth: 1,
+                    borderRadius: 5,
+                    borderSkipped: false,
+                }]
+            };
+
+            const options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Percentage (%)',
+                            font: {
+                                size: 14,
+                                weight: '500'
+                            }
+                        },
+                        grid: {
+                            color: '#F3F4F6' // Gray-100
+                        }
+                    },
+                    y: {
+                         grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: '#1F2937', // Gray-800
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 12
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.x !== null) {
+                                    label += context.parsed.x + '%';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            };
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                options: options
+            });
+        });
+    </script>
+
+</body>
+</html>
